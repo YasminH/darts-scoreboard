@@ -22,8 +22,8 @@ var Scoreboard = React.createClass({
         var oldA = this.state.playerA;
         var oldB = this.state.playerB;
 
-        oldA.name = this.props.playerA;
-        oldB.name = this.props.playerB;
+        oldA.name = this.props.playerA.name;
+        oldB.name = this.props.playerB.name;
 
         this.setState({ playerA: oldA, playerB: oldB });
     },
@@ -49,25 +49,6 @@ var Scoreboard = React.createClass({
 
         return this.state.playerB;
     },
-
-    // checkEndGame: function() {
-    //     var playerAscore = this.getPlayersCurrentScore(this.state.playerA);
-    //     var playerBscore = this.getPlayersCurrentScore(this.state.playerB);
-    //
-    //     console.log('checkEndGame() this.state.playerA.scores: ', this.state.playerA.scores);
-    //     console.log('checkEndGame() this.state.playerB.scores: ', this.state.playerB.scores);
-    //
-    //     console.log('playerAscore: ', playerAscore);
-    //     console.log('playerBscore: ', playerBscore);
-    //
-    //     if (playerAscore <= 0) {
-    //         this.props.onUpdate(this.props.playerA);
-    //     }
-    //
-    //     if (playerBscore <= 0) {
-    //         this.props.onUpdate(this.props.playerB);
-    //     }
-    // },
 
     checkEndGame: function(score) {
         var currentPlayer = this.getCurrentPlayersTurn();
@@ -127,33 +108,60 @@ var Scoreboard = React.createClass({
     },
 
     render: function() {
-        return <div>
+        console.log('scoreboard. this.props.playerA ', this.props.playerA);
 
-            <div className="column">
-                <h3>{ this.props.playerA }</h3>
-                    <ul>{this.state.playerA.scores.map(function (data) {
-                    return <Score score={data}/>;
-                })}</ul>
+        return <div className="container-scoreboard">
+
+            <div className="scoreboard-header">
+
             </div>
 
-            <div className="column">
-                <h3>{ this.props.playerB }</h3>
-                    <ul>{this.state.playerB.scores.map(function (data) {
-                    return <Score score={data}/>;
-                })}</ul>
+            <div className="scoreboard-content">
+
+                <div className="player-row">
+                    <div className="player-name">
+                        <h1>{ this.props.playerA.name }</h1>
+                    </div>
+                    <div className="player-stats">
+                        <ul>{this.state.playerA.scores.map(function (data) {
+                            return <Score score={data}/>;
+                            })}
+                        </ul>
+                        <div className="player-legs"><h1>{ this.props.playerA.legs }</h1></div>
+                        <Outchart currentScore={ this.getPlayersCurrentScore(this.state.playerA) } />
+                    </div>
+                </div>
+
+                <div className="player-row">
+                    <div className="player-name">
+                        <h1>{ this.props.playerB.name }</h1>
+                    </div>
+                    <div className="player-stats">
+                        <ul>{this.state.playerB.scores.map(function (data) { return <Score score={data}/>; })}
+                        </ul>
+                        <div className="player-legs"><h1>{ this.props.playerB.legs }</h1></div>
+                        <Outchart currentScore={ this.getPlayersCurrentScore(this.state.playerB) } />
+                    </div>
+                </div>
+
+                <div className="score-submit">
+                    <form onSubmit={this.handleSubmit}>
+                    <input onChange={this.onChange} value={this.state.justThrownScore} placeholder="0" />
+                    <button>Submit</button>
+                    </form>
+                </div>
+
             </div>
 
-            <form onSubmit={this.handleSubmit}>
-                <input onChange={this.onChange} value={this.state.justThrownScore} placeholder="0" />
-                <button>Submit</button>
-            </form>
 
-            { this.renderOutchart() }
+            <div className="scoreboard-footer">
+                <p>FX OPEN 2016</p>
+            </div>
 
 
-        </div>
+            </div>
 
-    },
+        },
 
 });
 

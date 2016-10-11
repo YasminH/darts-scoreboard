@@ -1,2 +1,76 @@
 h3 {
   color: pink; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 1px; }
+
+h1 {
+  margin: 0;
+  font-size: 50px; }
+
+.app, .app-inner {
+  height: 100%; }
+
+.selected {
+  background-color: green; }
+
+.container-scoreboard {
+  height: 100vh;
+  max-height: 100vh; }
+
+.scoreboard-header, .scoreboard-footer {
+  max-height: 15vh;
+  height: 15vh;
+  background-image: url("/images/blue-bg.jpg");
+  background-size: cover;
+  background-position: top center; }
+  .scoreboard-header p, .scoreboard-footer p {
+    margin: 0;
+    line-height: 100%;
+    font-size: 50px;
+    color: #fff; }
+
+.scoreboard-content {
+  position: relative;
+  height: 70vh;
+  max-height: 70vh; }
+
+.player-row {
+  position: relative;
+  height: 50%;
+  width: 100%; }
+  .player-row h1 {
+    margin: 0;
+    color: blue; }
+  .player-row p {
+    margin: 0; }
+
+.player-name {
+  position: relative;
+  width: 60%;
+  float: left;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%); }
+  .player-name h1 {
+    padding-left: 50px; }
+
+.player-legs {
+  color: black; }
+
+.player-stats {
+  width: 40%;
+  float: left; }
+
+.out-list {
+  list-style: none; }
+
+.out-item {
+  display: inline-block; }
+
+.score-submit {
+  position: absolute;
+  bottom: 0;
+  right: 0; }

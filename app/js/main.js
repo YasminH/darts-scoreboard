@@ -44,9 +44,9 @@ var App = React.createClass({
         }
 
         if (this.state.playerA.name === '') {
-            this.setState({playerA: {'name': player.name}});
+            this.setState({playerA: {'name': player.name, 'legs': player.legs}});
         } else {
-            this.setState({playerB: {'name': player.name}});
+            this.setState({playerB: {'name': player.name, 'legs': player.legs}});
         }
     },
 
@@ -57,6 +57,7 @@ var App = React.createClass({
     endGameHandler: function(player) {
         console.log('endGameHandler() ');
 
+        this.incrementMatchesPlayed();
         this.incrementPlayersLeg(player);
 
         var playerA = this.state.playerA;
@@ -67,12 +68,13 @@ var App = React.createClass({
         playerB.legs = 0;
 
         this.setState({matchOn: false});
+
+        console.log('endGameHandler() players', this.state.players);
     },
 
     incrementPlayersLeg: function(player) {
         console.log('incrementPlayersLeg() player: ', player);
         if (!player) {
-            console.log('incrementPlayersLeg() no player');
             return false;
         }
 
@@ -86,6 +88,18 @@ var App = React.createClass({
         }
 
         console.log('incrementPlayersLeg() this.state.players: ', this.state.players);
+    },
+
+    incrementMatchesPlayed: function() {
+        var players = this.state.players;
+
+        for (var i in players) {
+            if (players[i].name === this.state.playerA.name || players[i].name === this.state.playerB.name ) {
+                players[i].matches++;
+            }
+        }
+
+        this.setState({players: players});
     },
 
     renderReadyButton: function () {
@@ -115,7 +129,7 @@ var App = React.createClass({
             return <div></div>
         }
 
-        return <Scoreboard scoreStart={301} playerA={this.state.playerA.name} playerB={this.state.playerB.name} onUpdate={this.endGameHandler} />;
+        return <Scoreboard scoreStart={301} playerA={this.state.playerA} playerB={this.state.playerB} onUpdate={this.endGameHandler} />;
     },
 
     renderPlayers: function() {
@@ -143,7 +157,7 @@ var App = React.createClass({
     },
 
     render: function() {
-        return <div>
+        return <div className="app-inner">
 
             { this.renderStartScreen() }
 
