@@ -1,16 +1,22 @@
-h3 {
-    color: pink;
-}
+$fx-blue: #0155a0;
 
 html, body {
     height: 100%;
     width: 100%;
-    margin: 1px;
+    margin: 0;
+    font-family: Arial;
 }
 
 h1 {
     margin: 0;
-    font-size: 50px;
+    font-size: 13vh;
+    line-height: 100%;
+}
+
+h2 {
+    margin: 0;
+    font-size: 6vh;
+    line-height: 100%;
 }
 
 .app, .app-inner {
@@ -21,30 +27,111 @@ h1 {
     background-color: green;
 }
 
+.container-player-entry {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.container-home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+}
+
+.home-content {
+    position: relative;
+    height: 85%;
+    max-height: 85%;
+}
+
+.home-players {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.home-player-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #fcfcfc;
+    .column {
+        width: 50%;
+        float: left;
+    }
+
+    h2 {
+        transform: translateY(50%);
+    }
+
+    &:nth-child(odd) {
+        background-color: #f3f3f3;
+    }
+}
+
+.start-match-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .container-scoreboard {
-    height: 100vh;
-    max-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
 }
 
 .scoreboard-header, .scoreboard-footer {
-    max-height: 15vh;
-    height: 15vh;
+    position: relative;
+    max-height: 15%;
+    height: 15%;
     background-image: url('/images/blue-bg.jpg');
     background-size: cover;
-    background-position: top center;
+    background-position: center;
 
-    p {
-        margin: 0;
-        line-height: 100%;
-        font-size: 50px;
+    h1 {
+        padding-left: 50px;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
         color: #fff;
     }
 }
 
+.scoreboard-header--left, .scoreboard-header--right {
+    float: left;
+    height: 100%;
+}
+
+.scoreboard-header--left {
+    width: 60%;
+}
+
+.scoreboard-header--right {
+    width: 20%;
+
+    h1 {
+        padding-left: 0;
+        text-align: center;
+    }
+}
+
 .scoreboard-content {
+    clear: both;
     position: relative;
-    height: 70vh;
-    max-height: 70vh;
+    height: 70%;
+    max-height: 70%;
 }
 
 .player-row {
@@ -54,11 +141,18 @@ h1 {
 
     h1 {
         margin: 0;
-        color: blue;
     }
 
     p {
         margin: 0;
+    }
+
+    &--a {
+        background-color: #fcfcfc;
+    }
+
+    &--b {
+        background-color: #f3f3f3;
     }
 }
 
@@ -72,28 +166,99 @@ h1 {
 
     h1 {
         padding-left: 50px;
+        text-transform: uppercase;
+        color: $fx-blue;
     }
 }
 
-.player-legs {
-    color: black;
+.player-legs, .player-score {
+    position: relative;
+    width: 50%;
+    height: 50%;
+    float: left;
+    background-position: center;
+    background-size: cover;
+    background-image: url('/images/red-bg.gif');
+    text-align: center;
+    box-sizing: border-box;
+    border-bottom: 1px solid #F5F5F5;
+    border-top: 1px solid #F5F5F5;
+
+    h1 {
+        font-size: 13vh;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 }
 
 .player-stats {
     width: 40%;
     float: left;
+    color: #fff;
+}
+
+.outchart {
+    clear: both;
+    width: 100%;
+    height: 50%;
+    background-position: center;
+    background-size: cover;
+    background-image: url('/images/green-bg.gif');
+    text-align: center;
+
+    h1 {
+        font-size: 12vh;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 }
 
 .out-list {
+    margin: 0;
+    padding: 0;
     list-style: none;
+    display: flex;
+    justify-content: center;
 }
 
 .out-item {
-    display: inline-block;
+    margin: 0 5%;
 }
 
 .score-submit {
+    height: 100%;
+
+    form {
+        margin: 0;
+        height: 100%;
+    }
+
+    input {
+        width: 100%;
+        background-color: transparent;
+        border: 0;
+        color: #fff;
+        font-size: 13vh;
+        font-weight: bold;
+        text-align: center;
+
+        &:focus{
+            outline-width: 0;
+        }
+    }
+}
+
+.red-dot {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 50px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-image: url('/images/circle.png');
+    background-position: center;
+    background-size: cover;
 }

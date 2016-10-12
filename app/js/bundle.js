@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "a56d69d402cb94ebde83"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5f54e61ec209acb70563"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -12140,19 +12140,19 @@
 	var Scoreboard = __webpack_require__(101);
 
 	var Player = React.createClass({
-	    displayName: 'Player',
+	    displayName: "Player",
 
 	    handleClick: function () {
 	        this.props.onUpdate(this.props.player);
 	    },
 
 	    render: function () {
-	        return React.createElement('div', { onClick: this.handleClick }, this.props.player.name, ' ', this.props.player.legs);
+	        return React.createElement("li", { className: "home-player-item", onClick: this.handleClick }, React.createElement("div", { className: "column" }, React.createElement("h2", null, this.props.player.name)), " ", React.createElement("div", { className: "column" }, React.createElement("h2", null, this.props.player.legs)));
 	    }
 	});
 
 	var App = React.createClass({
-	    displayName: 'App',
+	    displayName: "App",
 
 	    getInitialState: function () {
 	        return {
@@ -12245,50 +12245,50 @@
 
 	    renderReadyButton: function () {
 	        if (this.state.players.length < 2) {
-	            return React.createElement('div', null);
+	            return React.createElement("div", null);
 	        }
 
-	        return React.createElement('div', { onClick: this.readyBtnClickHandler }, 'Ready');
+	        return React.createElement("div", { onClick: this.readyBtnClickHandler }, "Ready");
 	    },
 
 	    renderStartScreen: function () {
 	        if (!this.state.playersEntered) {
-	            return React.createElement('form', { onSubmit: this.handleSubmit }, React.createElement('input', { onChange: this.onChange, value: this.state.playerName, placeholder: 'Name' }), React.createElement('button', null, 'Add player'), this.renderReadyButton());
+	            return React.createElement("div", { className: "container-player-entry" }, React.createElement("form", { className: "player-entry-form", onSubmit: this.handleSubmit }, React.createElement("input", { onChange: this.onChange, value: this.state.playerName, placeholder: "Name" }), React.createElement("button", null, "Add player"), this.renderReadyButton()));
 	        }
 
-	        return React.createElement('div', null);
+	        return React.createElement("div", null);
 	    },
 
 	    renderScoreboard: function () {
 	        if (!this.state.matchOn) {
-	            return React.createElement('div', null);
+	            return React.createElement("div", null);
 	        }
 
 	        return React.createElement(Scoreboard, { scoreStart: 301, playerA: this.state.playerA, playerB: this.state.playerB, onUpdate: this.endGameHandler });
 	    },
 
-	    renderPlayers: function () {
+	    renderHome: function () {
 	        if (this.state.matchOn) {
-	            return React.createElement('div', null);
+	            return React.createElement("div", null);
 	        }
 
 	        var that = this;
 
-	        return React.createElement('div', null, React.createElement('ul', null, this.state.players.map(function (player) {
+	        return React.createElement("div", { className: "container-home" }, React.createElement("div", { className: "home-content" }, React.createElement("ul", { className: "home-players" }, this.state.players.map(function (player) {
 	            return React.createElement(Player, { player: player, onUpdate: that.handlePlayerSelection });
-	        })), this.renderStartMatchBtn());
+	        })), this.renderStartMatchBtn()), React.createElement("div", { className: "scoreboard-footer" }, React.createElement("h1", null, "FX OPEN 2016")));
 	    },
 
 	    renderStartMatchBtn: function () {
 	        if (this.state.playerA.name === '' || this.state.playerB.name === '') {
-	            return React.createElement('div', null);
+	            return React.createElement("div", null);
 	        }
 
-	        return React.createElement('div', { onClick: this.startMatch }, 'Start match');
+	        return React.createElement("div", { className: "start-match-btn", onClick: this.startMatch }, "Start match");
 	    },
 
 	    render: function () {
-	        return React.createElement('div', { className: 'app-inner' }, this.renderStartScreen(), this.renderPlayers(), this.renderScoreboard());
+	        return React.createElement("div", { className: "app-inner" }, this.renderHome(), this.renderStartScreen(), this.renderScoreboard());
 	    }
 
 	});
@@ -12310,7 +12310,7 @@
 	    displayName: 'Score',
 
 	    render: function () {
-	        return React.createElement('div', { className: 'score' }, this.props.score);
+	        return React.createElement('div', { className: 'player-score' }, React.createElement('h1', null, this.props.score));
 	    }
 	});
 
@@ -12358,6 +12358,24 @@
 	        return this.state.playerB;
 	    },
 
+	    getBestOf: function () {
+	        console.log('getbestof: ', this.props.playerA);
+
+	        if (this.props.playerA.legs < 2) {
+	            return React.createElement('span', null, '2');
+	        }
+
+	        if (this.props.playerA.legs < 3) {
+	            return React.createElement('span', null, '3');
+	        }
+
+	        if (this.props.playerA.legs < 4) {
+	            return React.createElement('span', null, '4');
+	        }
+
+	        return React.createElement('span', null);
+	    },
+
 	    checkEndGame: function (score) {
 	        var currentPlayer = this.getCurrentPlayersTurn();
 
@@ -12372,6 +12390,14 @@
 	        var currentPlayer = this.getCurrentPlayersTurn();
 
 	        return React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(currentPlayer), currentPlayer: currentPlayer });
+	    },
+
+	    renderRedDot: function (player) {
+	        if (player == this.getCurrentPlayersTurn()) {
+	            return React.createElement('div', { className: 'red-dot' });
+	        }
+
+	        return React.createElement('div', null);
 	    },
 
 	    handleSubmit: function (e) {
@@ -12418,11 +12444,7 @@
 	    render: function () {
 	        console.log('scoreboard. this.props.playerA ', this.props.playerA);
 
-	        return React.createElement('div', { className: 'container-scoreboard' }, React.createElement('div', { className: 'scoreboard-header' }), React.createElement('div', { className: 'scoreboard-content' }, React.createElement('div', { className: 'player-row' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerA.name)), React.createElement('div', { className: 'player-stats' }, React.createElement('ul', null, this.state.playerA.scores.map(function (data) {
-	            return React.createElement(Score, { score: data });
-	        })), React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.props.playerA.legs)), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerA) }))), React.createElement('div', { className: 'player-row' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerB.name)), React.createElement('div', { className: 'player-stats' }, React.createElement('ul', null, this.state.playerB.scores.map(function (data) {
-	            return React.createElement(Score, { score: data });
-	        })), React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.props.playerB.legs)), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerB) }))), React.createElement('div', { className: 'score-submit' }, React.createElement('form', { onSubmit: this.handleSubmit }, React.createElement('input', { onChange: this.onChange, value: this.state.justThrownScore, placeholder: '0' }), React.createElement('button', null, 'Submit')))), React.createElement('div', { className: 'scoreboard-footer' }, React.createElement('p', null, 'FX OPEN 2016')));
+	        return React.createElement('div', { className: 'container-scoreboard' }, React.createElement('div', { className: 'scoreboard-header' }, React.createElement('div', { className: 'scoreboard-header--left' }, React.createElement('h1', null, 'BEST OF ', this.getBestOf())), React.createElement('div', { className: 'scoreboard-header--right' }, React.createElement('h1', null, 'LEGS')), React.createElement('div', { className: 'scoreboard-header--right score-submit' }, React.createElement('form', { onSubmit: this.handleSubmit }, React.createElement('input', { onChange: this.onChange, value: this.state.justThrownScore }), React.createElement('button', null, 'Submit')))), React.createElement('div', { className: 'scoreboard-content' }, React.createElement('div', { className: 'player-row player-row--a' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerA.name), this.renderRedDot(this.state.playerA)), React.createElement('div', { className: 'player-stats' }, React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.props.playerA.legs)), React.createElement(Score, { score: this.getPlayersCurrentScore(this.state.playerA) }), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerA) }))), React.createElement('div', { className: 'player-row player-row--b' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerB.name), this.renderRedDot(this.state.playerB)), React.createElement('div', { className: 'player-stats' }, React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.props.playerB.legs)), React.createElement(Score, { score: this.getPlayersCurrentScore(this.state.playerB) }), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerB) })))), React.createElement('div', { className: 'scoreboard-footer' }, React.createElement('h1', null, 'FX OPEN 2016')));
 	    }
 
 	});
@@ -12445,7 +12467,21 @@
 	    '161': ['T20', 'T17', 'DB'],
 	    '160': ['T20', 'T20', 'D20'],
 	    '158': ['T20', 'T20', 'D19'],
-	    '157': ['T20', 'T19', 'D20']
+	    '157': ['T20', 'T19', 'D20'],
+	    '156': ['T20', 'T20', 'D18'],
+	    '155': ['T20', 'T19', 'D19'],
+	    '154': ['T20', 'T18', 'D20'],
+	    '153': [],
+	    '152': [],
+	    '151': [],
+	    '150': [],
+	    '149': [],
+	    '148': [],
+	    '147': [],
+	    '146': [],
+	    '145': [],
+	    '144': [],
+	    '143': []
 
 	};
 
@@ -12453,7 +12489,7 @@
 	    displayName: 'OutItem',
 
 	    render: function () {
-	        return React.createElement('li', { className: 'out-item' }, this.props.out);
+	        return React.createElement('li', { className: 'out-item' }, React.createElement('h1', null, this.props.out));
 	    }
 	});
 
@@ -12469,7 +12505,7 @@
 	            }));
 	        }
 
-	        return React.createElement('span', null, 'NO FINISH');
+	        return React.createElement('h1', { 'class': 'no-finish' }, 'NO FINISH');
 	    },
 
 	    render: function () {

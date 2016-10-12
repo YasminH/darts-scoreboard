@@ -26,7 +26,7 @@ var outs = {
 var OutItem = React.createClass({
     render: function() {
         return <li className="out-item">
-            {this.props.out}
+            <h1>{this.props.out}</h1>
         </li>;
     }
 });
@@ -42,7 +42,7 @@ var Outchart = React.createClass({
                 </ul>
         }
 
-        return <span>NO FINISH</span>
+        return <h1 class="no-finish">NO FINISH</h1>
     },
 
 

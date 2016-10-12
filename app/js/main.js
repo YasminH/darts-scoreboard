@@ -6,9 +6,9 @@ var Player = React.createClass({
     },
 
     render: function() {
-        return <div onClick={this.handleClick}>
-            {this.props.player.name} {this.props.player.legs}
-        </div>
+        return <li className="home-player-item" onClick={this.handleClick}>
+            <div className="column"><h2>{this.props.player.name}</h2></div> <div className="column"><h2>{this.props.player.legs}</h2></div>
+        </li>
     }
 });
 
@@ -112,13 +112,15 @@ var App = React.createClass({
 
     renderStartScreen: function () {
         if (!this.state.playersEntered) {
-            return <form onSubmit={this.handleSubmit}>
+            return <div className="container-player-entry">
+            <form className="player-entry-form" onSubmit={this.handleSubmit}>
             <input onChange={this.onChange} value={this.state.playerName} placeholder="Name" />
             <button>Add player</button>
 
             { this.renderReadyButton() }
 
             </form>
+            </div>
         }
 
         return <div></div>;
@@ -132,19 +134,29 @@ var App = React.createClass({
         return <Scoreboard scoreStart={301} playerA={this.state.playerA} playerB={this.state.playerB} onUpdate={this.endGameHandler} />;
     },
 
-    renderPlayers: function() {
+    renderHome: function() {
         if (this.state.matchOn) {
             return <div></div>
         }
 
         var that = this;
 
-        return <div><ul>
+        return <div className="container-home">
+
+        <div className="home-content">
+
+        <ul className="home-players">
             {this.state.players.map(function (player) {
                 return <Player player={player} onUpdate={that.handlePlayerSelection} />;
             })}
         </ul>
         { this.renderStartMatchBtn() }
+
+        </div>
+
+        <div className="scoreboard-footer">
+            <h1>FX OPEN 2016</h1>
+        </div>
         </div>
     },
 
@@ -153,15 +165,15 @@ var App = React.createClass({
             return <div></div>
         }
 
-        return <div onClick={this.startMatch}>Start match</div>;
+        return <div className="start-match-btn" onClick={this.startMatch}>Start match</div>;
     },
 
     render: function() {
         return <div className="app-inner">
 
-            { this.renderStartScreen() }
+            { this.renderHome() }
 
-            { this.renderPlayers() }
+            { this.renderStartScreen() }
 
             { this.renderScoreboard() }
 
