@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ff106d2bd7718631a567"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "df29010d37e005007441"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -12140,19 +12140,21 @@
 	var Scoreboard = __webpack_require__(101);
 
 	var Player = React.createClass({
-	    displayName: "Player",
+	    displayName: 'Player',
 
 	    handleClick: function () {
 	        this.props.onUpdate(this.props.player);
 	    },
 
 	    render: function () {
-	        return React.createElement("li", { className: "home-player-item", onClick: this.handleClick }, React.createElement("div", { className: "column" }, React.createElement("h2", null, this.props.player.name)), " ", React.createElement("div", { className: "column" }, React.createElement("h2", null, this.props.player.legs)));
+	        var selectedClass = this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name ? 'home-player-item active' : 'home-player-item';
+
+	        return React.createElement('li', { className: selectedClass, onClick: this.handleClick }, React.createElement('div', { className: 'column' }, React.createElement('h2', null, this.props.player.name)), ' ', React.createElement('div', { className: 'column' }, React.createElement('h2', null, this.props.player.wins)));
 	    }
 	});
 
 	var App = React.createClass({
-	    displayName: "App",
+	    displayName: 'App',
 
 	    getInitialState: function () {
 	        return {
@@ -12160,19 +12162,24 @@
 	            playerName: '',
 	            playersEntered: false,
 	            matchOn: false,
-	            playerA: { 'name': '', 'legs': 0, 'matches': 0 },
-	            playerB: { 'name': '', 'legs': 0, 'matches': 0 }
+	            playerA: { 'name': '', 'wins': 0 },
+	            playerB: { 'name': '', 'wins': 0 },
+	            bestOf: 3
 	        };
 	    },
 
 	    handleSubmit: function (e) {
 	        e.preventDefault();
 
-	        this.setState({ players: this.state.players.concat([{ 'name': this.state.playerName, 'legs': 0, 'matches': 0 }]), playerName: '' });
+	        this.setState({ players: this.state.players.concat([{ 'name': this.state.playerName, 'wins': 0 }]), playerName: '' });
 	    },
 
 	    onChange: function (e) {
 	        this.setState({ playerName: e.target.value });
+	    },
+
+	    onChangeBestOf: function (e) {
+	        this.setState({ bestOf: e.target.value });
 	    },
 
 	    readyBtnClickHandler: function () {
@@ -12185,40 +12192,38 @@
 	        }
 
 	        if (this.state.playerA.name === '') {
-	            this.setState({ playerA: { 'name': player.name, 'legs': player.legs } });
-	        } else {
-	            this.setState({ playerB: { 'name': player.name, 'legs': player.legs } });
+	            this.setState({ playerA: { 'name': player.name } });
+	        } else if (this.state.playerB.name === '') {
+	            this.setState({ playerB: { 'name': player.name } });
+	        } else if (this.state.playerA.name === player.name) {
+	            this.setState({ playerA: { 'name': '' } });
+	        } else if (this.state.playerB.name === player.name) {
+	            this.setState({ playerB: { 'name': '' } });
 	        }
 	    },
 
-	    startMatch: function () {
+	    startMatch: function (e) {
+	        e.preventDefault();
 	        this.setState({ matchOn: true });
 	    },
 
-	    endLegHandler: function (player) {
-	        console.log('endLegHandler() ');
-	        this.incrementPlayersLeg(player);
-	    },
-
-	    endGameHandler: function (player) {
-	        console.log('endGameHandler() ');
-
-	        this.incrementMatchesPlayed();
-
+	    endGameHandler: function (winner) {
 	        var playerA = this.state.playerA;
 	        var playerB = this.state.playerB;
 	        playerA.name = '';
 	        playerB.name = '';
-	        playerA.legs = 0;
-	        playerB.legs = 0;
 
 	        this.setState({ matchOn: false });
+
+	        if (winner != 'noone') {
+	            this.incrementPlayersWin(winner);
+	        }
 
 	        console.log('endGameHandler() players', this.state.players);
 	    },
 
-	    incrementPlayersLeg: function (player) {
-	        console.log('incrementPlayersLeg() player: ', player);
+	    incrementPlayersWin: function (player) {
+	        console.log('incrementPlayersWin() player: ', player);
 	        if (!player) {
 	            return false;
 	        }
@@ -12227,72 +12232,69 @@
 
 	        for (var i in oldPlayers) {
 	            if (oldPlayers[i].name === player) {
-	                oldPlayers[i].legs++;
+	                oldPlayers[i].wins++;
 	                this.setState({ players: oldPlayers });
 	            }
 	        }
 
-	        console.log('incrementPlayersLeg() this.state.players: ', this.state.players);
-	    },
-
-	    incrementMatchesPlayed: function () {
-	        var players = this.state.players;
-
-	        for (var i in players) {
-	            if (players[i].name === this.state.playerA.name || players[i].name === this.state.playerB.name) {
-	                players[i].matches++;
-	            }
-	        }
-
-	        this.setState({ players: players });
+	        console.log('incrementPlayersWin() this.state.players: ', this.state.players);
 	    },
 
 	    renderReadyButton: function () {
 	        if (this.state.players.length < 2) {
-	            return React.createElement("div", null);
+	            return React.createElement('div', null);
 	        }
 
-	        return React.createElement("div", { onClick: this.readyBtnClickHandler }, "Ready");
+	        return React.createElement('div', { onClick: this.readyBtnClickHandler }, 'Ready');
 	    },
 
 	    renderStartScreen: function () {
 	        if (!this.state.playersEntered) {
-	            return React.createElement("div", { className: "container-player-entry" }, React.createElement("form", { className: "player-entry-form", onSubmit: this.handleSubmit }, React.createElement("input", { onChange: this.onChange, value: this.state.playerName, placeholder: "Name" }), React.createElement("button", null, "Add player"), this.renderReadyButton()));
+	            return React.createElement('div', { className: 'container-player-entry' }, React.createElement('form', { className: 'player-entry-form', onSubmit: this.handleSubmit }, React.createElement('input', { onChange: this.onChange, value: this.state.playerName, placeholder: 'Name' }), React.createElement('button', null, 'Add player'), this.renderReadyButton()));
 	        }
 
-	        return React.createElement("div", null);
+	        return React.createElement('div', null);
 	    },
 
 	    renderScoreboard: function () {
 	        if (!this.state.matchOn) {
-	            return React.createElement("div", null);
+	            return React.createElement('div', null);
 	        }
 
-	        return React.createElement(Scoreboard, { scoreStart: 301, playerA: this.state.playerA, playerB: this.state.playerB, onUpdate: this.endGameHandler, onEndLeg: this.endLegHandler });
+	        return React.createElement(Scoreboard, { scoreStart: 301, bestOf: this.state.bestOf, playerA: this.state.playerA, playerB: this.state.playerB, onEndGame: this.endGameHandler });
 	    },
 
 	    renderHome: function () {
 	        if (this.state.matchOn) {
-	            return React.createElement("div", null);
+	            return React.createElement('div', null);
 	        }
 
 	        var that = this;
+	        var playerASelectedName;
+	        var playerBSelectedName;
 
-	        return React.createElement("div", { className: "container-home" }, React.createElement("div", { className: "home-content" }, React.createElement("ul", { className: "home-players" }, this.state.players.map(function (player) {
-	            return React.createElement(Player, { player: player, onUpdate: that.handlePlayerSelection });
-	        })), this.renderStartMatchBtn()), React.createElement("div", { className: "scoreboard-footer" }, React.createElement("h1", null, "FX OPEN 2016")));
+	        if (this.state.playerA.hasOwnProperty('name') && this.state.playerB.hasOwnProperty('name')) {
+	            playerASelectedName = this.state.playerA.name;
+	            playerBSelectedName = this.state.playerB.name;
+	        }
+
+	        return React.createElement('div', { className: 'container-home' }, React.createElement('div', { className: 'home-content' }, React.createElement('ul', { className: 'home-players' }, this.state.players.map(function (player) {
+	            return React.createElement(Player, { player: player, selectedPlayerAName: playerASelectedName, selectedPlayerBName: playerBSelectedName, onUpdate: that.handlePlayerSelection });
+	        })), this.renderStartMatchBtn()), React.createElement('div', { className: 'scoreboard-footer' }, React.createElement('h1', null, 'FX OPEN 2016')));
 	    },
 
 	    renderStartMatchBtn: function () {
 	        if (this.state.playerA.name === '' || this.state.playerB.name === '') {
-	            return React.createElement("div", null);
+	            return React.createElement('div', null);
 	        }
 
-	        return React.createElement("div", { className: "start-match-btn", onClick: this.startMatch }, "Start match");
+	        // return <div className="start-match-btn" onClick={this.startMatch}>Start match</div>;
+
+	        return React.createElement('div', { className: 'container-start-match' }, React.createElement('form', { className: 'best-of-form', onSubmit: this.startMatch }, React.createElement('input', { onChange: this.onChangeBestOf, value: this.state.bestOf, placeholder: 'Best of' }), React.createElement('button', null, 'Start match')));
 	    },
 
 	    render: function () {
-	        return React.createElement("div", { className: "app-inner" }, this.renderHome(), this.renderStartScreen(), this.renderScoreboard());
+	        return React.createElement('div', { className: 'app-inner' }, this.renderHome(), this.renderStartScreen(), this.renderScoreboard());
 	    }
 
 	});
@@ -12323,8 +12325,8 @@
 
 	    getInitialState: function () {
 	        return {
-	            playerA: { scores: [this.props.scoreStart] },
-	            playerB: { scores: [this.props.scoreStart] },
+	            playerA: { scores: [this.props.scoreStart], legs: 0 },
+	            playerB: { scores: [this.props.scoreStart], legs: 0 },
 	            justThrownScore: '',
 	            isPlayerAsTurn: true
 	        };
@@ -12363,34 +12365,52 @@
 	    },
 
 	    getBestOf: function () {
-	        console.log('getbestof: ', this.props.playerA);
+	        console.log('getbestof: ', this.props.bestOf);
 
-	        if (this.props.playerA.legs < 2) {
-	            return React.createElement('span', null, '3');
-	        }
-
-	        if (this.props.playerA.legs < 3) {
-	            return React.createElement('span', null, '5');
-	        }
-
-	        if (this.props.playerA.legs < 4) {
-	            return React.createElement('span', null, '7');
-	        }
-
-	        return React.createElement('span', null);
+	        return React.createElement('span', null, this.props.bestOf);
 	    },
 
 	    checkEndLeg: function (score) {
 	        var currentPlayer = this.getCurrentPlayersTurn();
+	        var oldPlayerA = this.state.playerA;
+	        var oldPlayerB = this.state.playerB;
 
 	        if (score <= 0) {
-	            // this.props.onUpdate(currentPlayer.name);
-	            this.props.onEndLeg(currentPlayer.name);
 
-	            console.log('currentPlayer legs: ', currentPlayer.legs);
-	        } else {
+	            currentPlayer.legs++; //Win!
 
-	            this.togglePlayersTurn();
+	            //Reset
+	            oldPlayerA.scores = [301];
+	            oldPlayerB.scores = [301];
+
+	            this.setState({ playerA: oldPlayerA, playerB: oldPlayerB });
+
+	            this.checkEndMatch();
+	        }
+
+	        this.togglePlayersTurn();
+	    },
+
+	    checkEndMatch: function () {
+	        console.log('checkEndMAtch()');
+	        var totalLegs = this.state.playerA.legs + this.state.playerB.legs;
+	        var bestOf = this.props.bestOf;
+
+	        console.log('checkEndMatch() bestOf + 1', parseInt(bestOf) + 1);
+
+	        var minimumLegsToWin = (parseInt(bestOf) + 1) * 0.5;
+
+	        console.log('checkEndMatch() this.state.playerA', this.state.playerA);
+	        console.log('checkEndMatch() this.state.playerB', this.state.playerB);
+
+	        console.log('checkEndMAtch() totalLegs: ', totalLegs);
+	        console.log('checkEndMAtch() minimumLegsToWin: ', minimumLegsToWin);
+
+	        console.log('checkEndMAtch() if statement: ', this.state.playerA.legs >= minimumLegsToWin || this.state.playerB.legs >= minimumLegsToWin);
+
+	        if ((this.state.playerA.legs >= minimumLegsToWin || this.state.playerB.legs >= minimumLegsToWin) && totalLegs >= minimumLegsToWin) {
+	            console.log('checkEndMAtch() End of match!!!!: ');
+	            this.props.onEndGame(this.getCurrentPlayersTurn().name);
 	        }
 	    },
 
@@ -12412,6 +12432,12 @@
 	        e.preventDefault();
 
 	        this.shit();
+	    },
+
+	    handleGoBack: function () {
+	        console.log('handleGoBack()');
+
+	        this.props.onEndGame('noone');
 	    },
 
 	    shit: function () {
@@ -12439,9 +12465,6 @@
 	            this.setState({ playerB: playerB, justThrownScore: '' });
 	        }
 
-	        console.log('shit() this.state.playerA', this.state.playerA);
-	        console.log('shit() this.state.playerB', this.state.playerB);
-
 	        this.checkEndLeg(newScore);
 	    },
 
@@ -12452,7 +12475,7 @@
 	    render: function () {
 	        console.log('scoreboard. this.props.playerA ', this.props.playerA);
 
-	        return React.createElement('div', { className: 'container-scoreboard' }, React.createElement('div', { className: 'scoreboard-header' }, React.createElement('div', { className: 'scoreboard-header--left' }, React.createElement('h1', null, 'BEST OF ', this.getBestOf())), React.createElement('div', { className: 'scoreboard-header--right' }, React.createElement('h1', null, 'LEGS')), React.createElement('div', { className: 'scoreboard-header--right score-submit' }, React.createElement('form', { onSubmit: this.handleSubmit }, React.createElement('input', { onChange: this.onChange, value: this.state.justThrownScore }), React.createElement('button', null, 'Submit')))), React.createElement('div', { className: 'scoreboard-content' }, React.createElement('div', { className: 'player-row player-row--a' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerA.name), this.renderRedDot(this.state.playerA)), React.createElement('div', { className: 'player-stats' }, React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.props.playerA.legs)), React.createElement(Score, { score: this.getPlayersCurrentScore(this.state.playerA) }), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerA) }))), React.createElement('div', { className: 'player-row player-row--b' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerB.name), this.renderRedDot(this.state.playerB)), React.createElement('div', { className: 'player-stats' }, React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.props.playerB.legs)), React.createElement(Score, { score: this.getPlayersCurrentScore(this.state.playerB) }), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerB) })))), React.createElement('div', { className: 'scoreboard-footer' }, React.createElement('h1', null, 'FX OPEN 2016')));
+	        return React.createElement('div', { className: 'container-scoreboard' }, React.createElement('div', { className: 'scoreboard-header' }, React.createElement('div', { className: 'scoreboard-header--left' }, React.createElement('h1', null, 'BEST OF ', this.getBestOf())), React.createElement('div', { className: 'scoreboard-header--right' }, React.createElement('h1', null, 'LEGS')), React.createElement('div', { className: 'scoreboard-header--right score-submit' }, React.createElement('form', { onSubmit: this.handleSubmit }, React.createElement('input', { onChange: this.onChange, value: this.state.justThrownScore }), React.createElement('button', null, 'Submit')))), React.createElement('div', { className: 'scoreboard-content' }, React.createElement('div', { className: 'player-row player-row--a' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerA.name), this.renderRedDot(this.state.playerA)), React.createElement('div', { className: 'player-stats' }, React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.state.playerA.legs)), React.createElement(Score, { score: this.getPlayersCurrentScore(this.state.playerA) }), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerA) }))), React.createElement('div', { className: 'player-row player-row--b' }, React.createElement('div', { className: 'player-name' }, React.createElement('h1', null, this.props.playerB.name), this.renderRedDot(this.state.playerB)), React.createElement('div', { className: 'player-stats' }, React.createElement('div', { className: 'player-legs' }, React.createElement('h1', null, this.state.playerB.legs)), React.createElement(Score, { score: this.getPlayersCurrentScore(this.state.playerB) }), React.createElement(Outchart, { currentScore: this.getPlayersCurrentScore(this.state.playerB) })))), React.createElement('div', { className: 'scoreboard-footer' }, React.createElement('h1', null, React.createElement('span', { onClick: this.handleGoBack }, 'FX'), ' OPEN 2016')));
 	    }
 
 	});

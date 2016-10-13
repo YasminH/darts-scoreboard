@@ -6,8 +6,10 @@ var Player = React.createClass({
     },
 
     render: function() {
-        return <li className="home-player-item" onClick={this.handleClick}>
-            <div className="column"><h2>{this.props.player.name}</h2></div> <div className="column"><h2>{this.props.player.legs}</h2></div>
+        var selectedClass = (this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name) ? 'home-player-item active' : 'home-player-item';
+
+        return <li className={selectedClass} onClick={this.handleClick}>
+            <div className="column"><h2>{this.props.player.name}</h2></div> <div className="column"><h2>{this.props.player.wins}</h2></div>
         </li>
     }
 });
@@ -19,19 +21,24 @@ var App = React.createClass({
             playerName: '',
             playersEntered: false,
             matchOn: false,
-            playerA: {'name': '', 'legs': 0, 'matches': 0},
-            playerB: {'name': '', 'legs': 0, 'matches': 0}
+            playerA: {'name': '', 'wins': 0},
+            playerB: {'name': '', 'wins': 0},
+            bestOf: 3
         };
     },
 
     handleSubmit: function(e) {
         e.preventDefault();
 
-        this.setState({players: this.state.players.concat([{'name':this.state.playerName, 'legs': 0, 'matches': 0}]), playerName: ''});
+        this.setState({players: this.state.players.concat([{'name':this.state.playerName, 'wins': 0}]), playerName: ''});
     },
 
     onChange: function(e) {
         this.setState({playerName: e.target.value});
+    },
+
+    onChangeBestOf: function(e) {
+        this.setState({bestOf: e.target.value});
     },
 
     readyBtnClickHandler: function () {
@@ -44,41 +51,38 @@ var App = React.createClass({
         }
 
         if (this.state.playerA.name === '') {
-            this.setState({playerA: {'name': player.name, 'legs': player.legs}});
-        } else {
-            this.setState({playerB: {'name': player.name, 'legs': player.legs}});
+            this.setState({playerA: {'name': player.name }});
+        } else if (this.state.playerB.name === '') {
+            this.setState({playerB: {'name': player.name }});
+        } else if (this.state.playerA.name === player.name) {
+            this.setState({playerA: {'name': ''}});
+        } else if (this.state.playerB.name === player.name) {
+            this.setState({playerB: {'name': ''}});
         }
     },
 
-    startMatch: function() {
+    startMatch: function(e) {
+        e.preventDefault();
         this.setState({matchOn: true});
     },
 
-    endLegHandler: function (player) {
-        console.log('endLegHandler() ');
-        this.incrementPlayersLeg(player);
-        
-    },
-
-    endGameHandler: function(player) {
-        console.log('endGameHandler() ');
-
-        this.incrementMatchesPlayed();
-
+    endGameHandler: function(winner) {
         var playerA = this.state.playerA;
         var playerB = this.state.playerB;
         playerA.name = '';
         playerB.name = '';
-        playerA.legs = 0;
-        playerB.legs = 0;
 
         this.setState({matchOn: false});
+
+        if (winner != 'noone') {
+            this.incrementPlayersWin(winner);
+        }
 
         console.log('endGameHandler() players', this.state.players);
     },
 
-    incrementPlayersLeg: function(player) {
-        console.log('incrementPlayersLeg() player: ', player);
+    incrementPlayersWin: function(player) {
+        console.log('incrementPlayersWin() player: ', player);
         if (!player) {
             return false;
         }
@@ -87,24 +91,12 @@ var App = React.createClass({
 
         for (var i in oldPlayers) {
             if (oldPlayers[i].name === player) {
-                oldPlayers[i].legs++;
+                oldPlayers[i].wins++;
                 this.setState({players: oldPlayers});
             }
         }
 
-        console.log('incrementPlayersLeg() this.state.players: ', this.state.players);
-    },
-
-    incrementMatchesPlayed: function() {
-        var players = this.state.players;
-
-        for (var i in players) {
-            if (players[i].name === this.state.playerA.name || players[i].name === this.state.playerB.name ) {
-                players[i].matches++;
-            }
-        }
-
-        this.setState({players: players});
+        console.log('incrementPlayersWin() this.state.players: ', this.state.players);
     },
 
     renderReadyButton: function () {
@@ -136,7 +128,7 @@ var App = React.createClass({
             return <div></div>
         }
 
-        return <Scoreboard scoreStart={301} playerA={this.state.playerA} playerB={this.state.playerB} onUpdate={this.endGameHandler} onEndLeg={this.endLegHandler}/>;
+        return <Scoreboard scoreStart={301} bestOf={this.state.bestOf} playerA={this.state.playerA} playerB={this.state.playerB} onEndGame={this.endGameHandler} />;
     },
 
     renderHome: function() {
@@ -145,6 +137,13 @@ var App = React.createClass({
         }
 
         var that = this;
+        var playerASelectedName;
+        var playerBSelectedName;
+
+        if (this.state.playerA.hasOwnProperty('name') && this.state.playerB.hasOwnProperty('name')) {
+            playerASelectedName = this.state.playerA.name;
+            playerBSelectedName = this.state.playerB.name;
+        }
 
         return <div className="container-home">
 
@@ -152,7 +151,7 @@ var App = React.createClass({
 
         <ul className="home-players">
             {this.state.players.map(function (player) {
-                return <Player player={player} onUpdate={that.handlePlayerSelection} />;
+                return <Player player={player} selectedPlayerAName={playerASelectedName} selectedPlayerBName={playerBSelectedName} onUpdate={that.handlePlayerSelection} />;
             })}
         </ul>
         { this.renderStartMatchBtn() }
@@ -170,7 +169,15 @@ var App = React.createClass({
             return <div></div>
         }
 
-        return <div className="start-match-btn" onClick={this.startMatch}>Start match</div>;
+        // return <div className="start-match-btn" onClick={this.startMatch}>Start match</div>;
+
+        return <div className="container-start-match">
+        <form className="best-of-form" onSubmit={this.startMatch}>
+        <input onChange={this.onChangeBestOf} value={this.state.bestOf} placeholder="Best of" />
+        <button>Start match</button>
+
+        </form>
+        </div>
     },
 
     render: function() {
