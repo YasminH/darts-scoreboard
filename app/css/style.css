@@ -30,12 +30,9 @@ h2 {
 .app, .app-inner {
   height: 100%; }
 
-.selected {
-  background-color: green; }
-
 .container-player-entry {
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0; }
 
 .container-start-match {
@@ -79,7 +76,13 @@ h2 {
   .home-player-item:nth-child(odd) {
     background-color: #f3f3f3; }
   .home-player-item.active {
-    background-color: yellow; }
+    background-color: #0fa184; }
+    .home-player-item.active h2 {
+      color: #fff; }
+  .home-player-item.not-top {
+    max-height: 20px; }
+    .home-player-item.not-top h2 {
+      font-size: 20px; }
 
 .start-match-btn {
   position: absolute;
@@ -230,3 +233,6 @@ h2 {
   background-image: url("/images/circle.png");
   background-position: center;
   background-size: cover; }
+
+.best-of-form input {
+  width: 30px; }

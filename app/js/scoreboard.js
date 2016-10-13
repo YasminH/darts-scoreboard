@@ -116,6 +116,22 @@ var Scoreboard = React.createClass({
         return <div></div>;
     },
 
+    renderFooter: function() {
+        var stage;
+
+        if (this.props.bestOf == 5) {
+            stage = "- SEMI FINAL";
+        }
+
+        if (this.props.bestOf == 7) {
+            stage = "- FINAL";
+        }
+
+        return <div className="scoreboard-footer">
+            <h1><span onClick={this.handleGoBack}>FX</span> OPEN 2016 { stage }</h1>
+        </div>
+    },
+
     handleSubmit: function(e) {
         e.preventDefault();
 
@@ -211,9 +227,7 @@ var Scoreboard = React.createClass({
             </div>
 
 
-            <div className="scoreboard-footer">
-                <h1><span onClick={this.handleGoBack}>FX</span> OPEN 2016</h1>
-            </div>
+            { this.renderFooter() }
 
 
             </div>

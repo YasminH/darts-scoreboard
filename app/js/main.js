@@ -6,9 +6,13 @@ var Player = React.createClass({
     },
 
     render: function() {
-        var selectedClass = (this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name) ? 'home-player-item active' : 'home-player-item';
 
-        return <li className={selectedClass} onClick={this.handleClick}>
+        var largestScore = Math.max.apply(Math, this.props.allPlayersWins);
+
+        var selectedClass = (this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name) ? 'home-player-item active' : 'home-player-item';
+        var topWinScoreClass = (largestScore == this.props.player.wins) ? '' : 'not-top';
+
+        return <li className={selectedClass + ' ' + topWinScoreClass} onClick={this.handleClick}>
             <div className="column"><h2>{this.props.player.name}</h2></div> <div className="column"><h2>{this.props.player.wins}</h2></div>
         </li>
     }
@@ -23,7 +27,8 @@ var App = React.createClass({
             matchOn: false,
             playerA: {'name': '', 'wins': 0},
             playerB: {'name': '', 'wins': 0},
-            bestOf: 3
+            bestOf: 3,
+            winnerScreenOn: false
         };
     },
 
@@ -104,7 +109,7 @@ var App = React.createClass({
             return <div></div>;
         }
 
-        return <div onClick={this.readyBtnClickHandler}>Ready</div>;
+        return <div onClick={this.readyBtnClickHandler}>hide</div>;
     },
 
     renderStartScreen: function () {
@@ -145,13 +150,25 @@ var App = React.createClass({
             playerBSelectedName = this.state.playerB.name;
         }
 
+        var allPlayersWins = [];
+
+        for (var i = 0; i < this.state.players.length; i++) {
+
+            if (this.state.players[i].hasOwnProperty('wins')) {
+                allPlayersWins.push(this.state.players[i].wins);
+            }
+
+        }
+
+        console.log('allPlayersWins: ', allPlayersWins);
+
         return <div className="container-home">
 
         <div className="home-content">
 
         <ul className="home-players">
             {this.state.players.map(function (player) {
-                return <Player player={player} selectedPlayerAName={playerASelectedName} selectedPlayerBName={playerBSelectedName} onUpdate={that.handlePlayerSelection} />;
+                return <Player player={player} selectedPlayerAName={playerASelectedName} selectedPlayerBName={playerBSelectedName} allPlayersWins={allPlayersWins} onUpdate={that.handlePlayerSelection} />;
             })}
         </ul>
         { this.renderStartMatchBtn() }
@@ -169,15 +186,19 @@ var App = React.createClass({
             return <div></div>
         }
 
-        // return <div className="start-match-btn" onClick={this.startMatch}>Start match</div>;
-
         return <div className="container-start-match">
         <form className="best-of-form" onSubmit={this.startMatch}>
         <input onChange={this.onChangeBestOf} value={this.state.bestOf} placeholder="Best of" />
-        <button>Start match</button>
+        <button>START</button>
 
         </form>
         </div>
+    },
+
+    renderWinnerScreen(playerName) {
+        if (this.state.winnerScreenOn) {
+            return <div className="container-winner">playerName wins!</div>
+        }
     },
 
     render: function() {
