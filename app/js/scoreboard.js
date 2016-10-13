@@ -54,26 +54,32 @@ var Scoreboard = React.createClass({
         console.log('getbestof: ', this.props.playerA);
 
         if (this.props.playerA.legs < 2) {
-            return <span>2</span>
-        }
-
-        if (this.props.playerA.legs < 3) {
             return <span>3</span>
         }
 
+        if (this.props.playerA.legs < 3) {
+            return <span>5</span>
+        }
+
         if (this.props.playerA.legs < 4) {
-            return <span>4</span>
+            return <span>7</span>
         }
 
         return <span></span>;
     },
 
-    checkEndGame: function(score) {
+    checkEndLeg: function(score) {
         var currentPlayer = this.getCurrentPlayersTurn();
 
         if (score <= 0) {
-            this.props.onUpdate(currentPlayer.name);
+            // this.props.onUpdate(currentPlayer.name);
+            this.props.onEndLeg(currentPlayer.name);
+
+            console.log('currentPlayer legs: ', currentPlayer.legs);
+
+            
         } else {
+            
             this.togglePlayersTurn();
         }
     },
@@ -126,7 +132,7 @@ var Scoreboard = React.createClass({
         console.log('shit() this.state.playerA', this.state.playerA);
         console.log('shit() this.state.playerB', this.state.playerB);
 
-        this.checkEndGame(newScore);
+        this.checkEndLeg(newScore);
     },
 
     onChange: function(e) {

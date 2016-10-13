@@ -54,11 +54,16 @@ var App = React.createClass({
         this.setState({matchOn: true});
     },
 
+    endLegHandler: function (player) {
+        console.log('endLegHandler() ');
+        this.incrementPlayersLeg(player);
+        
+    },
+
     endGameHandler: function(player) {
         console.log('endGameHandler() ');
 
         this.incrementMatchesPlayed();
-        this.incrementPlayersLeg(player);
 
         var playerA = this.state.playerA;
         var playerB = this.state.playerB;
@@ -131,7 +136,7 @@ var App = React.createClass({
             return <div></div>
         }
 
-        return <Scoreboard scoreStart={301} playerA={this.state.playerA} playerB={this.state.playerB} onUpdate={this.endGameHandler} />;
+        return <Scoreboard scoreStart={301} playerA={this.state.playerA} playerB={this.state.playerB} onUpdate={this.endGameHandler} onEndLeg={this.endLegHandler}/>;
     },
 
     renderHome: function() {

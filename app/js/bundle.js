@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "5f54e61ec209acb70563"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ff106d2bd7718631a567"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -12195,11 +12195,15 @@
 	        this.setState({ matchOn: true });
 	    },
 
+	    endLegHandler: function (player) {
+	        console.log('endLegHandler() ');
+	        this.incrementPlayersLeg(player);
+	    },
+
 	    endGameHandler: function (player) {
 	        console.log('endGameHandler() ');
 
 	        this.incrementMatchesPlayed();
-	        this.incrementPlayersLeg(player);
 
 	        var playerA = this.state.playerA;
 	        var playerB = this.state.playerB;
@@ -12264,7 +12268,7 @@
 	            return React.createElement("div", null);
 	        }
 
-	        return React.createElement(Scoreboard, { scoreStart: 301, playerA: this.state.playerA, playerB: this.state.playerB, onUpdate: this.endGameHandler });
+	        return React.createElement(Scoreboard, { scoreStart: 301, playerA: this.state.playerA, playerB: this.state.playerB, onUpdate: this.endGameHandler, onEndLeg: this.endLegHandler });
 	    },
 
 	    renderHome: function () {
@@ -12362,26 +12366,30 @@
 	        console.log('getbestof: ', this.props.playerA);
 
 	        if (this.props.playerA.legs < 2) {
-	            return React.createElement('span', null, '2');
-	        }
-
-	        if (this.props.playerA.legs < 3) {
 	            return React.createElement('span', null, '3');
 	        }
 
+	        if (this.props.playerA.legs < 3) {
+	            return React.createElement('span', null, '5');
+	        }
+
 	        if (this.props.playerA.legs < 4) {
-	            return React.createElement('span', null, '4');
+	            return React.createElement('span', null, '7');
 	        }
 
 	        return React.createElement('span', null);
 	    },
 
-	    checkEndGame: function (score) {
+	    checkEndLeg: function (score) {
 	        var currentPlayer = this.getCurrentPlayersTurn();
 
 	        if (score <= 0) {
-	            this.props.onUpdate(currentPlayer.name);
+	            // this.props.onUpdate(currentPlayer.name);
+	            this.props.onEndLeg(currentPlayer.name);
+
+	            console.log('currentPlayer legs: ', currentPlayer.legs);
 	        } else {
+
 	            this.togglePlayersTurn();
 	        }
 	    },
@@ -12434,7 +12442,7 @@
 	        console.log('shit() this.state.playerA', this.state.playerA);
 	        console.log('shit() this.state.playerB', this.state.playerB);
 
-	        this.checkEndGame(newScore);
+	        this.checkEndLeg(newScore);
 	    },
 
 	    onChange: function (e) {
