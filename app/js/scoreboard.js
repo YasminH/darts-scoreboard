@@ -135,7 +135,18 @@ var Scoreboard = React.createClass({
     handleSubmit: function(e) {
         e.preventDefault();
 
-        this.shit();
+        if (this.isInt(this.state.justThrownScore))
+        {
+            this.shit();
+        } else {
+            console.log("NOT AN INT!!!!!");
+        }
+
+
+    },
+
+    isInt: function(value) {
+        return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
     },
 
     handleGoBack: function() {
