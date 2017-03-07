@@ -7,10 +7,9 @@ var Player = React.createClass({
 
     render: function() {
 
-        var largestScore = Math.max.apply(Math, this.props.allPlayersWins);
-
-        var selectedClass = (this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name) ? 'home-player-item active' : 'home-player-item';
-        var topWinScoreClass = (largestScore == this.props.player.wins) ? '' : 'not-top';
+        var largestScore = Math.max.apply(Math, this.props.allPlayersWins),
+        selectedClass = (this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name) ? 'home-player-item active' : 'home-player-item',
+        topWinScoreClass = (largestScore == this.props.player.wins) ? '' : 'not-top';
 
         return <li className={selectedClass + ' ' + topWinScoreClass} onClick={this.handleClick}>
             <div className="column"><h2>{this.props.player.name}</h2></div> <div className="column"><h2>{this.props.player.wins}</h2></div>
@@ -82,12 +81,9 @@ var App = React.createClass({
         if (winner != 'noone') {
             this.incrementPlayersWin(winner);
         }
-
-        console.log('endGameHandler() players', this.state.players);
     },
 
     incrementPlayersWin: function(player) {
-        console.log('incrementPlayersWin() player: ', player);
         if (!player) {
             return false;
         }
@@ -100,8 +96,6 @@ var App = React.createClass({
                 this.setState({players: oldPlayers});
             }
         }
-
-        console.log('incrementPlayersWin() this.state.players: ', this.state.players);
     },
 
     renderReadyButton: function () {
@@ -141,9 +135,9 @@ var App = React.createClass({
             return <div></div>
         }
 
-        var that = this;
-        var playerASelectedName;
-        var playerBSelectedName;
+        var that = this,
+        playerASelectedName,
+        playerBSelectedName;
 
         if (this.state.playerA.hasOwnProperty('name') && this.state.playerB.hasOwnProperty('name')) {
             playerASelectedName = this.state.playerA.name;
@@ -152,15 +146,11 @@ var App = React.createClass({
 
         var allPlayersWins = [];
 
-        for (var i = 0; i < this.state.players.length; i++) {
-
+        for (var i in this.state.players) {
             if (this.state.players[i].hasOwnProperty('wins')) {
                 allPlayersWins.push(this.state.players[i].wins);
             }
-
         }
-
-        console.log('allPlayersWins: ', allPlayersWins);
 
         return <div className="container-home">
 
@@ -176,7 +166,7 @@ var App = React.createClass({
         </div>
 
         <div className="scoreboard-footer">
-            <h1>FX OPEN 2016</h1>
+            <h1>DARTS 2016</h1>
         </div>
         </div>
     },

@@ -13,14 +13,14 @@ var Scoreboard = React.createClass({
         return {
             playerA: {scores: [this.props.scoreStart], legs: 0},
             playerB: {scores: [this.props.scoreStart], legs: 0},
-            justThrownScore: '',
+            justThrownScore: 0,
             isPlayerAsTurn: true
         };
     },
 
     componentDidMount: function() {
-        var oldA = this.state.playerA;
-        var oldB = this.state.playerB;
+        var oldA = this.state.playerA,
+        oldB = this.state.playerB;
 
         oldA.name = this.props.playerA.name;
         oldB.name = this.props.playerB.name;
@@ -51,18 +51,15 @@ var Scoreboard = React.createClass({
     },
 
     getBestOf: function () {
-        console.log('getbestof: ', this.props.bestOf);
-
         return <span>{ this.props.bestOf }</span>;
     },
 
     checkEndLeg: function(score) {
-        var currentPlayer = this.getCurrentPlayersTurn();
-        var oldPlayerA = this.state.playerA;
-        var oldPlayerB = this.state.playerB;
+        var currentPlayer = this.getCurrentPlayersTurn(),
+        oldPlayerA = this.state.playerA,
+        oldPlayerB = this.state.playerB;
 
         if (score <= 0) {
-
             currentPlayer.legs++; //Win!
 
             //Reset
@@ -72,31 +69,17 @@ var Scoreboard = React.createClass({
             this.setState({playerA: oldPlayerA, playerB: oldPlayerB});
 
             this.checkEndMatch();
-
         }
 
         this.togglePlayersTurn();
     },
 
     checkEndMatch: function() {
-        console.log('checkEndMAtch()');
-        var totalLegs = this.state.playerA.legs + this.state.playerB.legs;
-        var bestOf = this.props.bestOf;
-
-        console.log('checkEndMatch() bestOf + 1', parseInt(bestOf) + 1 );
-
-        var minimumLegsToWin = (parseInt(bestOf) + 1) * 0.5;
-
-        console.log('checkEndMatch() this.state.playerA', this.state.playerA);
-        console.log('checkEndMatch() this.state.playerB', this.state.playerB);
-
-        console.log('checkEndMAtch() totalLegs: ', totalLegs);
-        console.log('checkEndMAtch() minimumLegsToWin: ', minimumLegsToWin);
-
-        console.log('checkEndMAtch() if statement: ', (this.state.playerA.legs >= minimumLegsToWin || this.state.playerB.legs >= minimumLegsToWin));
+        var totalLegs = this.state.playerA.legs + this.state.playerB.legs,
+        bestOf = this.props.bestOf,
+        minimumLegsToWin = (parseInt(bestOf) + 1) * 0.5;
 
         if ((this.state.playerA.legs >= minimumLegsToWin || this.state.playerB.legs >= minimumLegsToWin) && totalLegs >= minimumLegsToWin) {
-            console.log('checkEndMAtch() End of match!!!!: ');
             this.props.onEndGame(this.getCurrentPlayersTurn().name);
         }
 
@@ -113,7 +96,7 @@ var Scoreboard = React.createClass({
             return <div className="red-dot"></div>
         }
 
-        return <div></div>;
+        return false;
     },
 
     renderFooter: function() {
@@ -128,21 +111,42 @@ var Scoreboard = React.createClass({
         }
 
         return <div className="scoreboard-footer">
-            <h1><span onClick={this.handleGoBack}>FX</span> OPEN 2016 { stage }</h1>
+            <h1><span onClick={this.handleGoBack}>DARTS</span> 2016 { stage }</h1>
         </div>
     },
 
     handleSubmit: function(e) {
         e.preventDefault();
 
-        if (this.isInt(this.state.justThrownScore))
-        {
-            this.shit();
-        } else {
-            console.log("NOT AN INT!!!!!");
+        if (!this.isInt(this.state.justThrownScore)) {
+            return false;
         }
 
+        var currentPlayersTurn = this.getCurrentPlayersTurn(),
+        currentScore = this.getPlayersCurrentScore(currentPlayersTurn),
+        oldScores,
+        newScore;
 
+        if (this.state.isPlayerAsTurn) {
+            oldScores = this.state.playerA.scores;
+            newScore = this.getNewScore(currentScore);
+
+            var playerA = this.state.playerA;
+            playerA.scores = oldScores.concat([newScore]);
+
+            this.setState({playerA: playerA, justThrownScore: 0});
+        } else {
+            oldScores = this.state.playerB.scores;
+            newScore = this.getNewScore(currentScore);
+
+            var playerB = this.state.playerB;
+            playerB.scores = oldScores.concat([newScore]);
+
+            this.setState({playerB: playerB, justThrownScore: 0});
+        }
+
+        this.checkEndLeg(newScore);
+        
     },
 
     isInt: function(value) {
@@ -150,37 +154,7 @@ var Scoreboard = React.createClass({
     },
 
     handleGoBack: function() {
-        console.log('handleGoBack()');
-
         this.props.onEndGame('noone');
-    },
-
-    shit: function() {
-        var currentPlayersTurn = this.getCurrentPlayersTurn();
-
-        var currentScore = this.getPlayersCurrentScore(currentPlayersTurn);
-        var oldScores;
-        var newScore;
-
-        if (this.state.isPlayerAsTurn) {
-            oldScores = this.state.playerA.scores;
-            newScore = this.getNewScore(currentScore);
-            var playerA = this.state.playerA;
-            playerA.scores = oldScores.concat([newScore]);
-
-            console.log('isPlayerAsTurn: oldscore: ', oldScores, 'newscore: ', newScore);
-
-            this.setState({playerA: playerA, justThrownScore: ''});
-        } else {
-            oldScores = this.state.playerB.scores;
-            newScore = this.getNewScore(currentScore);
-            var playerB = this.state.playerB;
-            playerB.scores = oldScores.concat([newScore]);
-
-            this.setState({playerB: playerB, justThrownScore: ''});
-        }
-
-        this.checkEndLeg(newScore);
     },
 
     onChange: function(e) {
@@ -188,8 +162,6 @@ var Scoreboard = React.createClass({
     },
 
     render: function() {
-        console.log('scoreboard. this.props.playerA ', this.props.playerA);
-
         return <div className="container-scoreboard">
 
             <div className="scoreboard-header">
@@ -237,9 +209,7 @@ var Scoreboard = React.createClass({
 
             </div>
 
-
             { this.renderFooter() }
-
 
             </div>
 

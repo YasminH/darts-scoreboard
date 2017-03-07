@@ -163,11 +163,6 @@ var outs = {
 '3': [''],
 '2': [''],
 '1': [''],
-
-
-
-
-
 };
 
 var OutItem = React.createClass({

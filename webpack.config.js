@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
     entry: [
       'webpack/hot/dev-server',
-      "./app/js/entry.js"
+      "./app/js/main.js"
     ],
     output: {
         path: __dirname + '/app/js',
@@ -13,7 +13,7 @@ module.exports = {
     },
     module: {
         loaders: [
-            { test: /\.js?$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
+            { test: /\.js?$/, loaders: ['babel'], exclude: /node_modules/ },
             { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
             { test: /\.css$/, loader: "style!css" },
             { test: /\.js?$/, exclude: /node_modules/, loader: 'babel', query: { presets: ['react']} }
