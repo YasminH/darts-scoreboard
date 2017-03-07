@@ -137,9 +137,7 @@ h2 {
   position: relative;
   height: 50%;
   width: 100%; }
-  .player-row h1 {
-    margin: 0; }
-  .player-row p {
+  .player-row h1, .player-row p {
     margin: 0; }
   .player-row--a {
     background-color: #fcfcfc; }
