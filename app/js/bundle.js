@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "74da77e3a384b64a984f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2d6055a9e6f1ffe9218a"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -706,7 +706,7 @@
 	            selectedClass = this.props.selectedPlayerAName == this.props.player.name || this.props.selectedPlayerBName == this.props.player.name ? 'home-player-item active' : 'home-player-item',
 	            topWinScoreClass = largestScore == this.props.player.wins ? '' : 'not-top';
 
-	        return React.createElement('li', { className: selectedClass + ' ' + topWinScoreClass, onClick: this.handleClick }, React.createElement('div', { className: 'column' }, React.createElement('h2', null, this.props.player.name)), ' ', React.createElement('div', { className: 'column' }, React.createElement('h2', null, this.props.player.wins)));
+	        return React.createElement('li', { className: selectedClass + ' ' + topWinScoreClass, onClick: this.handleClick }, React.createElement('div', { className: 'column' }, React.createElement('h2', null, this.props.player.name)), React.createElement('div', { className: 'column' }, React.createElement('h2', null, this.props.player.wins)));
 	    }
 	});
 
@@ -721,8 +721,7 @@
 	            matchOn: false,
 	            playerA: { 'name': '', 'wins': 0 },
 	            playerB: { 'name': '', 'wins': 0 },
-	            bestOf: 3,
-	            winnerScreenOn: false
+	            bestOf: 3
 	        };
 	    },
 
@@ -795,7 +794,7 @@
 
 	    renderReadyButton: function () {
 	        if (this.state.players.length < 2) {
-	            return React.createElement('div', null);
+	            return false;
 	        }
 
 	        return React.createElement('div', { onClick: this.readyBtnClickHandler }, 'hide');
@@ -811,7 +810,7 @@
 
 	    renderScoreboard: function () {
 	        if (!this.state.matchOn) {
-	            return React.createElement('div', null);
+	            return false;
 	        }
 
 	        return React.createElement(Scoreboard, { scoreStart: 301, bestOf: this.state.bestOf, playerA: this.state.playerA, playerB: this.state.playerB, onEndGame: this.endGameHandler });
@@ -819,7 +818,7 @@
 
 	    renderHome: function () {
 	        if (this.state.matchOn) {
-	            return React.createElement('div', null);
+	            return false;
 	        }
 
 	        var that = this,
@@ -846,16 +845,10 @@
 
 	    renderStartMatchBtn: function () {
 	        if (this.state.playerA.name === '' || this.state.playerB.name === '') {
-	            return React.createElement('div', null);
+	            return false;
 	        }
 
 	        return React.createElement('div', { className: 'container-start-match' }, React.createElement('form', { className: 'best-of-form', onSubmit: this.startMatch }, React.createElement('input', { onChange: this.onChangeBestOf, value: this.state.bestOf, placeholder: 'Best of' }), React.createElement('button', null, 'START')));
-	    },
-
-	    renderWinnerScreen(playerName) {
-	        if (this.state.winnerScreenOn) {
-	            return React.createElement('div', { className: 'container-winner' }, 'playerName wins!');
-	        }
 	    },
 
 	    render: function () {
@@ -893,8 +886,8 @@
 	    },
 
 	    componentDidMount: function () {
-	        var oldA = this.state.playerA;
-	        var oldB = this.state.playerB;
+	        var oldA = this.state.playerA,
+	            oldB = this.state.playerB;
 
 	        oldA.name = this.props.playerA.name;
 	        oldB.name = this.props.playerB.name;

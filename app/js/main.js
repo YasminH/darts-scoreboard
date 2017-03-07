@@ -12,7 +12,12 @@ var Player = React.createClass({
         topWinScoreClass = (largestScore == this.props.player.wins) ? '' : 'not-top';
 
         return <li className={selectedClass + ' ' + topWinScoreClass} onClick={this.handleClick}>
-            <div className="column"><h2>{this.props.player.name}</h2></div> <div className="column"><h2>{this.props.player.wins}</h2></div>
+            <div className="column">
+                <h2>{this.props.player.name}</h2>
+            </div>
+            <div className="column">
+                <h2>{this.props.player.wins}</h2>
+            </div>
         </li>
     }
 });
@@ -26,8 +31,7 @@ var App = React.createClass({
             matchOn: false,
             playerA: {'name': '', 'wins': 0},
             playerB: {'name': '', 'wins': 0},
-            bestOf: 3,
-            winnerScreenOn: false
+            bestOf: 3
         };
     },
 
@@ -100,7 +104,7 @@ var App = React.createClass({
 
     renderReadyButton: function () {
         if (this.state.players.length < 2) {
-            return <div></div>;
+            return false;
         }
 
         return <div onClick={this.readyBtnClickHandler}>hide</div>;
@@ -109,13 +113,13 @@ var App = React.createClass({
     renderStartScreen: function () {
         if (!this.state.playersEntered) {
             return <div className="container-player-entry">
-            <form className="player-entry-form" onSubmit={this.handleSubmit}>
-            <input onChange={this.onChange} value={this.state.playerName} placeholder="Name" />
-            <button>Add player</button>
+                <form className="player-entry-form" onSubmit={this.handleSubmit}>
+                    <input onChange={this.onChange} value={this.state.playerName} placeholder="Name" />
+                    <button>Add player</button>
 
-            { this.renderReadyButton() }
+                    { this.renderReadyButton() }
 
-            </form>
+                </form>
             </div>
         }
 
@@ -124,7 +128,7 @@ var App = React.createClass({
 
     renderScoreboard: function() {
         if (!this.state.matchOn) {
-            return <div></div>
+            return false;
         }
 
         return <Scoreboard scoreStart={301} bestOf={this.state.bestOf} playerA={this.state.playerA} playerB={this.state.playerB} onEndGame={this.endGameHandler} />;
@@ -132,7 +136,7 @@ var App = React.createClass({
 
     renderHome: function() {
         if (this.state.matchOn) {
-            return <div></div>
+            return false;
         }
 
         var that = this,
@@ -153,27 +157,26 @@ var App = React.createClass({
         }
 
         return <div className="container-home">
+            <div className="home-content">
 
-        <div className="home-content">
+            <ul className="home-players">
+                {this.state.players.map(function (player) {
+                    return <Player player={player} selectedPlayerAName={playerASelectedName} selectedPlayerBName={playerBSelectedName} allPlayersWins={allPlayersWins} onUpdate={that.handlePlayerSelection} />;
+                })}
+            </ul>
+            { this.renderStartMatchBtn() }
 
-        <ul className="home-players">
-            {this.state.players.map(function (player) {
-                return <Player player={player} selectedPlayerAName={playerASelectedName} selectedPlayerBName={playerBSelectedName} allPlayersWins={allPlayersWins} onUpdate={that.handlePlayerSelection} />;
-            })}
-        </ul>
-        { this.renderStartMatchBtn() }
+            </div>
 
-        </div>
-
-        <div className="scoreboard-footer">
-            <h1>DARTS 2016</h1>
-        </div>
+            <div className="scoreboard-footer">
+                <h1>DARTS 2016</h1>
+            </div>
         </div>
     },
 
     renderStartMatchBtn: function () {
         if (this.state.playerA.name === '' || this.state.playerB.name === '') {
-            return <div></div>
+            return false;
         }
 
         return <div className="container-start-match">
@@ -183,12 +186,6 @@ var App = React.createClass({
 
         </form>
         </div>
-    },
-
-    renderWinnerScreen(playerName) {
-        if (this.state.winnerScreenOn) {
-            return <div className="container-winner">playerName wins!</div>
-        }
     },
 
     render: function() {
